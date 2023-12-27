@@ -18,11 +18,15 @@ int main() {
     int thread_num = THREAD_NUM;
     splitFile("temp.txt", "split", thread_num);
 
-    // for(int t = 0; t < thread_num; t++) {
-    //     threads.push_back(std::thread(worker, t, thread_num, ht));
-    // }
+    for(int t = 0; t < thread_num; t++) {
+        threads.push_back(std::thread(worker, t, thread_num, ht));
+    }
 
-    // ht.displayHash(BUCKET_SIZE, 999, false);
+    for (auto& thread: threads) {
+        thread.join();
+    }
+    
+    ht.displayHash(BUCKET_SIZE, 999, false);
 
     return 0;
 }
@@ -94,17 +98,21 @@ void hashing_thread(Hash hash_table, int thread_num) {
 
 void worker(int tid, int thread_num, Hash hash_table) {
 
-    std::ifstream temp("temp.txt");
-    if (!temp.is_open()) {
-        std::cerr << "Error: Can not create temp file\n";
+    std::string file_name = "split/";
+    file_name = file_name.append(std::to_string(tid));
+    file_name = file_name.append(".txt");
+
+    std::ifstream partition(file_name);
+    if (!partition.is_open()) {
+        std::cerr << "Error: Can not open " << tid << " file\n";
     }
 
     std::string word;
-    while (temp >> word) {
+    while (partition >> word) {
         hash_table.insertItem(word);
     }
 
-    temp.close();
+    partition.close();
 }
 
 void splitFile(const std::string& inputFileName, const std::string& outputDirectory, int N) {
@@ -126,7 +134,7 @@ void splitFile(const std::string& inputFileName, const std::string& outputDirect
         std::ifstream::pos_type end = (i + 1) * partSize;
 
         // Open output file
-        std::string outputFileName = outputDirectory + "/part" + std::to_string(i + 1) + ".part";
+        std::string outputFileName = outputDirectory + "/" + std::to_string(i) + ".txt";
         std::ofstream outputFile(outputFileName, std::ios::binary);
 
         if (!outputFile.is_open()) {
