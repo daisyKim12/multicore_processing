@@ -3,6 +3,7 @@
 
 int main() {
 
+    std::mutex mutex1;
     // process text file
     preprocessFile();
 
