@@ -1,11 +1,11 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <iostream>
-#include <fstream>
 #include <cctype>
+#include "hash.h"
 
-void preprocessFile(std::ifstream& src, std::ofstream& dest);
-void processFirst10Words();
+void preprocessFile(void);
+void printFirst10Words(void);
+void hashing_harrypotter(Hash hash_table);
 
 #endif

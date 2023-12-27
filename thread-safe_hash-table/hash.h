@@ -6,6 +6,8 @@
 
 #include <list>
 #include <string>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -17,6 +19,7 @@ class Hash
         // Pointer to an array containing buckets
         list<string> *table;
         
+        
     public:
         Hash(int num_bucket);
 
@@ -26,7 +29,7 @@ class Hash
 
         int hashFunction(string str);
 
-        void displayHash();
+        void displayHash(int bucket_num, int link_num, bool print);
 };
 
 #endif

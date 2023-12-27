@@ -9,7 +9,12 @@ Hash::Hash(int num_bucket)
 void Hash::insertItem(string word)
 {
     int index = hashFunction(word);
-    table[index].push_back(word); 
+
+    auto it = std::find(table[index].begin(), table[index].end(), word);
+
+    if (it == table[index].end()) {
+        table[index].push_back(word);
+    }
 }
 
 void Hash::deleteItem(string word)
@@ -46,12 +51,37 @@ int Hash::hashFunction(string str) {
     return hash;
 }
 
-// function to display hash table
-void Hash::displayHash() {
-    // for (int i = 0; i < BUCKET; i++) {
-    //     cout << i;
-    //     for (auto x : table[i])
-    //     cout << " --> " << x;
-    //     cout << endl;
-    // }
+void Hash::displayHash(int bucket_num, int link_num, bool print) {
+
+    std::ofstream prof("hash_prof.txt");
+    if (!prof.is_open()) {
+        std::cerr << "Error: Can not create temp file\n";
+    }
+
+    for (int i = 0; i < bucket_num; i++) {
+
+        if(!print){
+
+            prof << i << ": ";
+            int count = 0;
+
+            for (auto it = table[i].begin(); it != table[i].end() && count < link_num; ++it, ++count) {
+                prof << *it << " -> ";
+            }
+
+            prof << "...\n";
+        } else {
+            std::cout << i << ": ";
+            int count = 0;
+
+            for (auto it = table[i].begin(); it != table[i].end() && count < link_num; ++it, ++count) {
+                std::cout << *it << " -> ";
+            }
+
+            std::cout << "..." << std::endl;
+        }
+        
+    }
+    
+    prof.close();
 }

@@ -1,38 +1,39 @@
 #include "main.h"
-#include "hash.h"
 
 
 int main() {
-    // Open source file using ifstream
-    std::ifstream srcFile("J. K. Rowling - Harry Potter 1 - Sorcerer's Stone.txt");
-    if (!srcFile.is_open()) {
-        std::cerr << "Error: Can not find text file\n";
-        return 1;
-    }
 
-    // Assign ofstream for temporary file
-    std::ofstream tempFile("temp.txt");
-    if (!tempFile.is_open()) {
-        std::cerr << "Error: Can not create temp file\n";
-        return 1;
-    }
+    // process text file
+    preprocessFile();
 
-    // Convert each word in the file to lowercase
-    preprocessFile(srcFile, tempFile);
+    // print the first 10 words in the file
+    printFirst10Words();
 
-    // Process the first 10 words in the file
-    processFirst10Words();
+    std::cout << "------------------------------------------\n";
 
-    // Close file streams
-    tempFile.close();
-    srcFile.close();
+    Hash ht(BUCKET_SIZE);
+    hashing_harrypotter(ht);
 
+    ht.displayHash(BUCKET_SIZE, 999, false);
 
     return 0;
 }
 
 // Function to convert each word in the file to lowercase
-void preprocessFile(std::ifstream& src, std::ofstream& dest) {
+void preprocessFile(void) {
+
+    // Open source file using ifstream
+    std::ifstream src("J. K. Rowling - Harry Potter 1 - Sorcerer's Stone.txt");
+    if (!src.is_open()) {
+        std::cerr << "Error: Can not find text file\n";
+    }
+
+    // Assign ofstream for temporary file
+    std::ofstream temp("temp.txt");
+    if (!temp.is_open()) {
+        std::cerr << "Error: Can not create temp file\n";
+    }
+
     std::string word;
     while (src >> word) {
         for (char& c : word) {
@@ -44,12 +45,16 @@ void preprocessFile(std::ifstream& src, std::ofstream& dest) {
             return !std::isalnum(c);
         }), word.end());
 
-        dest << word << " ";
+        temp << word << " ";
     }
+
+    // Close file streams
+    temp.close();
+    src.close();
 }
 
 // Function to process the first 10 words in the file
-void processFirst10Words() {
+void printFirst10Words(void) {
 
     std::ifstream tempFile("temp.txt");
     if (!tempFile.is_open()) {
@@ -61,5 +66,20 @@ void processFirst10Words() {
     for (int i = 1; i <= 10 && tempFile >> word; ++i) {
         std::cout << i << ": " << word << "\n";
     }
-    std::cout << "------------------------------------------\n";
+}
+
+void hashing_harrypotter(Hash hash_table) {
+
+    std::ifstream temp("temp.txt");
+    if (!temp.is_open()) {
+        std::cerr << "Error: Can not create temp file\n";
+    }
+
+    std::string word;
+    while (temp >> word) {
+        hash_table.insertItem(word);
+    }
+
+    // Close file streams
+    temp.close();
 }
