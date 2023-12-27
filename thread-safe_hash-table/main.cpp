@@ -16,13 +16,13 @@ int main() {
 
     std::vector<std::thread> threads;
     int thread_num = THREAD_NUM;
-    splitFile("input.txt", "output_", thread_num);
-    
-    for(int t = 0; t < thread_num; t++) {
-        threads.push_back(std::thread(worker, t, thread_num, ht));
-    }
+    splitFile("temp.txt", "split", thread_num);
 
-    ht.displayHash(BUCKET_SIZE, 999, false);
+    // for(int t = 0; t < thread_num; t++) {
+    //     threads.push_back(std::thread(worker, t, thread_num, ht));
+    // }
+
+    // ht.displayHash(BUCKET_SIZE, 999, false);
 
     return 0;
 }
@@ -107,7 +107,7 @@ void worker(int tid, int thread_num, Hash hash_table) {
     temp.close();
 }
 
-void splitFile(const std::string& inputFileName, const std::string& outputPrefix, int N) {
+void splitFile(const std::string& inputFileName, const std::string& outputDirectory, int N) {
     std::ifstream inputFile(inputFileName, std::ios::binary | std::ios::ate);
     
     if (!inputFile.is_open()) {
@@ -118,12 +118,15 @@ void splitFile(const std::string& inputFileName, const std::string& outputPrefix
     std::streampos fileSize = inputFile.tellg();
     std::streampos partSize = fileSize / N;
 
+    // Ensure the output directory exists
+    fs::create_directory(outputDirectory);
+
     for (int i = 0; i < N; ++i) {
         std::ifstream::pos_type start = i * partSize;
         std::ifstream::pos_type end = (i + 1) * partSize;
 
         // Open output file
-        std::string outputFileName = outputPrefix + std::to_string(i + 1) + ".part";
+        std::string outputFileName = outputDirectory + "/part" + std::to_string(i + 1) + ".part";
         std::ofstream outputFile(outputFileName, std::ios::binary);
 
         if (!outputFile.is_open()) {

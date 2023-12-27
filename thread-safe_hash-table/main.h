@@ -4,9 +4,12 @@
 #include <vector>
 #include <thread>
 #include <cctype>
+#include <filesystem>
 #include "hash.h"
 
 #define THREAD_NUM 10;
+
+namespace fs = std::__fs::filesystem;
 
 void preprocessFile(void);
 void printFirst10Words(void);
