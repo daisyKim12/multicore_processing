@@ -3,11 +3,13 @@
 
 #include <vector>
 #include <thread>
+#include <mutex>
 #include <cctype>
 #include <filesystem>
 #include "hash.h"
 
 #define THREAD_NUM 10;
+#define MUTEX_NUM 12;
 
 namespace fs = std::__fs::filesystem;
 

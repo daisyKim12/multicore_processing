@@ -8,9 +8,6 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-// #include <mutex>
-
-#define MUTEX_NUM 4
 
 using namespace std;
 
@@ -22,8 +19,6 @@ class Hash
         int mutex_num;
         // Pointer to an array containing buckets
         list<string> *table;
-
-        std::mutex mutex_table[4];
         
 
     public:

@@ -14,12 +14,19 @@ int main() {
     Hash ht(BUCKET_SIZE);
     // hashing_thread(ht, THREAD_NUM);
 
-    std::vector<std::thread> threads;
     int thread_num = THREAD_NUM;
+    int mutex_num = MUTEX_NUM;
+    std::vector<std::thread> threads;
+    std::unique_ptr<std::mutex> mutexs(new std::mutex[mutex_num]);
+    // https://stackoverflow.com/questions/16465633/how-can-i-use-something-like-stdvectorstdmutex
+    // for(int m = 0; m < mutex_num; m++) {
+    //     mutexs.push_back(std::mutex());
+    // }
+
     splitFile("temp.txt", "split", thread_num);
 
     for(int t = 0; t < thread_num; t++) {
-        threads.push_back(std::thread(worker, t, thread_num, ht));
+        threads.push_back(std::thread(worker, t, thread_num, ht, mutexs));
     }
         
     for (size_t i = 0; i < threads.size(); ++i) {
@@ -96,7 +103,7 @@ void hashing_thread(Hash hash_table, int thread_num) {
 
 }
 
-void worker(int tid, int thread_num, Hash hash_table) {
+void worker(int tid, int thread_num, Hash hash_table,  std::unique_ptr<std::mutex> mutexs) {
 
     std::string file_name = "split/";
     file_name = file_name.append(std::to_string(tid));
